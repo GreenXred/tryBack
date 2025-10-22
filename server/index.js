@@ -1,16 +1,18 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const todosRoutes = require('./routes/todosRoutes')
+
 require('dotenv').config()
 
-const app = express()
+const app = express() 
 
-const PORT = process.env.PORT || 3001 
+app.use(express.json()) // Для парсинга JSON в теле запросов
+app.use('/api/todos', todosRoutes)  // Подключение роутов для работы с задачами
 
-app.get('/', (req, res) => { 
-    res.send('Hello World!')
-})
+const PORT = process.env.PORT || 3001 // Порт сервера
 
-const start = async () => {
+//----- Функция для старта сервера и подключения к базе данных -----//
+const start = async () => { 
     try {
         await mongoose.connect(process.env.DB_CONNECT)
         app.listen(PORT, () => console.log(`Server started on port - ${PORT}`)) 
@@ -19,4 +21,4 @@ const start = async () => {
     }
 }
 
-start( )
+start()
