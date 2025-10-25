@@ -1,10 +1,13 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const todosRoutes = require('./routes/todosRoutes')
 
 require('dotenv').config()
 
 const app = express() 
+
+app.use(cors()) // Разрешение CORS
 
 app.use(express.json()) // Для парсинга JSON в теле запросов
 app.use('/api/todos', todosRoutes)  // Подключение роутов для работы с задачами
