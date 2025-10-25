@@ -12,4 +12,7 @@ todosRoutes.post('/add', todosController.addTodo);
 // Удалить задачу
 todosRoutes.delete('/delete', todosController.deleteTodo);
 
+// Редактировать задачу
+todosRoutes.put('/edit', todosController.editTodo);
+
 module.exports = todosRoutes;

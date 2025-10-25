@@ -34,7 +34,7 @@ export const AddTodoItem = ({ updateTodoList }) => {
     }
     return (
         <form onSubmit={onSubmit}>
-            <input type="text" placeholder="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input type="text" placeholder="Название задачи" value={title} onChange={(e) => setTitle(e.target.value)} />
             <br />
             <br />
             <button type="submit">Добавить</button>
