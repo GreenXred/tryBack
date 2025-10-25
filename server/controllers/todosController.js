@@ -17,15 +17,15 @@ class TodosController {
     async addTodo(req, res) {
         try {
             if (!req.body.title) {
-                res.status(400).json({ message: 'Пожалуйста, добавьте заголовок!' });
+                return res.status(400).json({ message: 'Пожалуйста, добавьте заголовок!' });
             }
 
             const todoModel = new TodosModel({ title: req.body.title });
             await todoModel.save();
 
-            res.status(200).json({ message: 'Задача успешно добавлена!' });
+            return res.status(200).json({ message: 'Задача успешно добавлена!' });
         } catch (error) {
-            res.status(400).json({ message: 'Ошибка при добавлении задачи' });
+            return res.status(400).json({ message: 'Ошибка при добавлении задачи' });
         }
     }
 
