@@ -1,34 +1,26 @@
 import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 
 export const TodoList = ({ todoList, updateTodoList }) => {
+    const api = useApi();
+
     const [editingTitle, setEditingTitle] = useState(null); // Состояние для хранения текущего редактируемого названия задачи
     const [newTitle, setNewTitle] = useState(''); // Состояние для хранения нового значения поля ввода при редактировании
 
 
     //----- Функция для удаления задачи по названию -----//
     const deleteTodoItem = async (title) => {
-        try {
-            const res = await fetch("http://localhost:3002/api/todos/delete", {
-                method: "delete",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title //: значение поля ввода, которое будет отправлено на сервер
-                })
-            })
+        const resp = await api("http://localhost:3002/api/todos/delete", "delete", {
+            title: title
+        });
 
-            if (res.status !== 200) { // Если статус ответа не 200, выводим сообщение об ошибке
-                const json = await res.json()
-                alert(json.message)
-                return;
-            }
-            updateTodoList(); // Обновление списка задач после успешного добавления новой задачи
-        } catch (error) {
-            console.log(error);
+        if (!resp.ok) {
+            alert(resp.error);
+            return;
         }
-    }
+
+        updateTodoList();
+    };
 
     //----- Функция для начала редактирования задачи -----//
     const startEdit = (title) => {
@@ -38,29 +30,27 @@ export const TodoList = ({ todoList, updateTodoList }) => {
 
     //----- Функция для редактирования -----//
     const saveEdit = async () => {
-        try {
-            const res = await fetch("http://localhost:3002/api/todos/edit", {
-                method: "put",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ oldTitle: editingTitle, newTitle })
-            });
+        if (!editingTitle) return;
 
-            if (res.status !== 200) {
-                const json = await res.json();
-                alert(json.message);
-                return;
-            }
-
-            setEditingTitle(null);
-            setNewTitle('');
-            updateTodoList();
-        } catch (error) {
-            console.log(error);
+        const trimmed = (newTitle || '').trim();
+        if (!trimmed) {
+            alert('Заголовок не может быть пустым');
+            return;
         }
-    };
+
+        const resp = await api("http://localhost:3002/api/todos/edit", "put", {
+            oldTitle: editingTitle,
+            newTitle: trimmed
+        });
+
+        if (!resp.ok) {
+            alert(resp.error);
+            return;
+        }
+        setEditingTitle(null);
+        setNewTitle('');
+        updateTodoList();
+    }
 
     return (
         <>
